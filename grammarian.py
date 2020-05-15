@@ -20,6 +20,18 @@ def grammarize_word(word):
     return words
 
 def grammarize_phrase(phrase):
-    return [phrase]
+    phrase_words = phrase.split()
+    grammarized_phrases = []
+    for i in range(len(phrase_words)):
+        target_word = phrase_words[i]
+        grammarized_word = grammarize_word(target_word)
+        for j in range(len(grammarized_word)):
+            grammarized_phrase = phrase.split()
+            grammarized_phrase[i] = grammarized_word[j]
+            space = " "
+            grammarized_phrase = space.join(grammarized_phrase)
+            grammarized_phrases.append(grammarized_phrase)
+    return grammarized_phrases
 
 
+print(grammarize_phrase("beacon of hope"))
