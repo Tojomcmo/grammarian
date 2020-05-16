@@ -6,7 +6,7 @@ class MyTestCase(unittest.TestCase):
 
     #
     #
-    # grammarize by substituting one letter
+    # grammarize by substituting one letter - 3 tests
     def test_grammarize_word_substitute_generates_word_with_substitution(self):
         words = gm.grammarize_word_substitute('fear')
         self.assertIn('bear', words)
@@ -22,7 +22,7 @@ class MyTestCase(unittest.TestCase):
 
     #
     #
-    # grammarized letter removal in word
+    # grammarized letter removal in word - 3 tests
     def test_grammarize_word_delete_generates_word_with_removal(self):
         words = gm.grammarize_word_delete('fear')
         self.assertIn('far', words)
@@ -38,7 +38,7 @@ class MyTestCase(unittest.TestCase):
 
     #
     #
-    # phrases from letter substitution
+    # phrases from letter substitution - 3 tests
 
     def test_grammarize_phrase_substitute_generates_phrase_with_substitution(self):
         phrases = gm.grammarize_phrase_substitute('make fear')
@@ -58,7 +58,7 @@ class MyTestCase(unittest.TestCase):
 
     #
     #
-    # phrases from letter removal
+    # phrases from letter removal - 4 tests
 
     def test_grammarize_phrase_delete_generates_phrases_with_deletions(self):
         phrases = gm.grammarize_phrase_delete('fear fare')
@@ -70,17 +70,17 @@ class MyTestCase(unittest.TestCase):
         self.assertIn('make far fare', phrases)
         self.assertIn('make ear fare', phrases)
 
-    def test_grammarize_word_delete_does_not_include_original_word(self):
+    def test_grammarize_phrase_delete_does_not_include_original_word(self):
         phrases = gm.grammarize_phrase_delete('fear fare')
         self.assertNotIn('fear fare', phrases)
 
-    def test_grammarize_word_delete_does_not_include_word_with_multiple_removals(self):
+    def test_grammarize_phrase_delete_does_not_include_word_with_multiple_removals(self):
         phrases = gm.grammarize_phrase_delete('fear fare')
         self.assertNotIn('ear far', phrases)
 
     #
     #
-    # phrases from letter shifting
+    # phrases from letter shifting - 3 tests
     def test_grammarize_phrase_shift_generates_phrase_with_letter_shift(self):
         phrases = gm.grammarize_phrase_shift('make fear')
         self.assertIn('make fare', phrases)
@@ -95,7 +95,7 @@ class MyTestCase(unittest.TestCase):
 
     #
     #
-    # full grammarian functionß
+    # full grammarian function - 7 tests
 
     def test_grammarize_phrase_generates_phrases_from_substitution(self):
         phrases = gm.grammarize_phrase('make fear')
@@ -113,23 +113,125 @@ class MyTestCase(unittest.TestCase):
         phrases = gm.grammarize_phrase('make fear')
         self.assertIn('make fare', phrases)
 
-    def test_grammarize_phrase_shift_does_not_include_original_phrase(self):
+    def test_grammarize_phrase_does_not_include_original_phrase(self):
         phrases = gm.grammarize_phrase('make fear')
         self.assertNotIn('make fear', phrases)
 
-    def test_grammarize_phrase_substitute_does_not_include_multiple_words_with_substitutions(self):
-        phrases = gm.grammarize_phrase_substitute('make fear')
+    def test_grammarize_phrase_does_not_include_multiple_words_with_substitutions(self):
+        phrases = gm.grammarize_phrase('make fear')
         self.assertNotIn('bake bear', phrases)
 
-    def test_grammarize_word_delete_does_not_include_word_with_multiple_removals(self):
-        phrases = gm.grammarize_phrase_delete('fear fare')
+    def test_grammarize_phrase_does_not_include_word_with_multiple_removals(self):
+        phrases = gm.grammarize_phrase('fear fare')
         self.assertNotIn('ear far', phrases)
 
-    def test_grammarize_phrase_shift_does_not_include_multiple_shifted_letters(self):
+    def test_grammarize_phrase_does_not_include_multiple_shifted_letters(self):
         phrases = gm.grammarize_phrase('make fear')
         self.assertNotIn('fake mare', phrases)
 
+    #
+    #
+    # full grammarian function for a list of phrases - 7 tests
 
+    def test_grammarize_phrase_list_generates_list_of_phrases_from_substitution(self):
+        phrases = gm.grammarize_phrase_list(['make fear', 'fear fare'])
+        self.assertIn('bake fear', phrases)
+        self.assertIn('make bear', phrases)
+        self.assertIn('make feat', phrases)
+        self.assertIn('made fear', phrases)
+        self.assertIn('feat fare', phrases)
+        self.assertIn('fear fade', phrases)
+
+    def test_grammarize_phrase_list_generates_list_of_phrases_from_deletion(self):
+        phrases = gm.grammarize_phrase_list(['make fear', 'fear fare'])
+        self.assertIn('make far', phrases)
+        self.assertIn('make ear', phrases)
+        self.assertIn('far fare', phrases)
+        self.assertIn('fear far', phrases)
+
+    def test_grammarize_phrase_list_generates_phrases_from_shift(self):
+        phrases = gm.grammarize_phrase_list(['make fear', 'fear fare'])
+        self.assertIn('make fare', phrases)
+        self.assertIn('fare fare', phrases)
+
+    def test_grammarize_phrase_list_does_not_include_original_phrase(self):
+        phrases = gm.grammarize_phrase_list(['make fear', 'fear fare'])
+        self.assertNotIn('make fear', phrases)
+        self.assertNotIn('fear fare', phrases)
+
+    def test_grammarize_phrase_list_does_not_include_multiple_words_with_substitutions(self):
+        phrases = gm.grammarize_phrase_list(['make fear', 'fear fare'])
+        self.assertNotIn('bake bear', phrases)
+        self.assertNotIn('bear fade', phrases)
+
+    def test_grammarize_phrase_list_does_not_include_word_with_multiple_removals(self):
+        phrases = gm.grammarize_phrase_list(['make fear', 'fear fare'])
+        self.assertNotIn('ear far', phrases)
+        self.assertNotIn('far far', phrases)
+
+    def test_grammarize_phrase_list_does_not_include_multiple_shifted_letters(self):
+        phrases = gm.grammarize_phrase_list(['make fear', 'fear fare'])
+        self.assertNotIn('fake mare', phrases)
+        self.assertNotIn('fare fear', phrases)
+
+
+#
+#
+#  grammarize function that returns a list of lists pertaining to each original spell
+#  need to rearrange test sets to dig into list array to pull individual elements. sorry.
+
+#     def test_grammarize_phrase_set_generates_list_array_of_phrases_from_substitution(self):
+#         phrases = gm.grammarize_phrase_set(['make fear', 'fear fare'])
+#         self.assertIn('bake fear', phrases)
+#         self.assertIn('make bear', phrases)
+#         self.assertIn('make feat', phrases)
+#         self.assertIn('made fear', phrases)
+#         self.assertIn('feat fare', phrases)
+#         self.assertIn('fear fade', phrases)
+#
+#     def test_grammarize_phrase_set_generates_list_array_of_phrases_from_deletion(self):
+#         phrases = gm.grammarize_phrase_set(['make fear', 'fear fare'])
+#         self.assertIn('make far', phrases)
+#         self.assertIn('make ear', phrases)
+#         self.assertIn('far fare', phrases)
+#         self.assertIn('fear far', phrases)
+#
+#     def test_grammarize_phrase_set_generates_phrases_from_shift(self):
+#         phrases = gm.grammarize_phrase_set(['make fear', 'fear fare'])
+#         self.assertIn('make fare', phrases)
+#         self.assertIn('fare fare', phrases)
+#
+#     def test_grammarize_phrase_set__includes_original_phrase(self):
+#         phrases = gm.grammarize_phrase_set(['make fear', 'fear fare'])
+#         self.assertIn('make fear', phrases)
+#         self.assertIn('fear fare', phrases)
+#
+#     def test_grammarize_phrase_set_does_not_include_multiple_words_with_substitutions(self):
+#         phrases = gm.grammarize_phrase_set(['make fear', 'fear fare'])
+#         self.assertNotIn('bake bear', phrases)
+#         self.assertNotIn('bear fade', phrases)
+#
+#     def test_grammarize_phrase_set_does_not_include_word_with_multiple_removals(self):
+#         phrases = gm.grammarize_phrase_set(['make fear', 'fear fare'])
+#         self.assertNotIn('ear far', phrases)
+#         self.assertNotIn('far far', phrases)
+#
+#     def test_grammarize_phrase_set_does_not_include_multiple_shifted_letters(self):
+#         phrases = gm.grammarize_phrase_set(['make fear', 'fear fare'])
+#         self.assertNotIn('fake mare', phrases)
+#         self.assertNotIn('fare fear', phrases)
+
+
+#
+#
+#  function that pulls a list of entries from an excel workbook and saves the first column as a list
+#  not sure how to write tests for external file checks
+
+
+#
+#
+#  function that writes the grammarized phrases to an excel file, formatted
+#  not sure how to write tests for external file checks
 
 if __name__ == '__main__':
     unittest.main()
