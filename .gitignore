@@ -1,2 +1,5 @@
 .idea/
 venv/
+.DS_Store
+grammarian_output.xlsx
+__pycache__/

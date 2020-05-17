@@ -1,5 +1,6 @@
 import enchant
 import string
+from functools import reduce
 
 import xlrd
 import xlsxwriter
@@ -116,34 +117,14 @@ def grammarize_phrase_delete(phrase):
     return grammarized_phrases_delete_set
 
 def grammarize_phrase(phrase):
-    grammarized_phrase_set = []
-    substitute = grammarize_phrase_substitute(phrase)
-    delete = grammarize_phrase_delete(phrase)
-    shift = grammarize_phrase_shift(phrase)
-    for i in range(len(substitute)):
-        grammarized_phrase_set.append(substitute[i])
-    for j in range(len(delete)):
-        grammarized_phrase_set.append(delete[j])
-    for k in range(len(shift)):
-        grammarized_phrase_set.append(shift[k])
-    return grammarized_phrase_set
+    return grammarize_phrase_substitute(phrase) + grammarize_phrase_delete(phrase) + grammarize_phrase_shift(phrase)
 
-def grammarize_phrase_list(phrase_list):
-    grammarized_phrase_list = []
-    for i in range(len(phrase_list)):
-        grammarized_phrase = grammarize_phrase(phrase_list[i])
-        for j in range(len(grammarized_phrase)):
-            grammarized_phrase_list.append(grammarized_phrase[j])
-    return grammarized_phrase_list
+def generate_grammarized_phrase_map(phrase_list):
+    def add_to_dict(acc, phrase):
+        acc[phrase] = grammarize_phrase(phrase)
+        return acc
 
-def grammarize_phrase_set(phrase_list):
-    grammarized_phrase_set = []
-    for i in range(len(phrase_list)):
-        kernel_phrase = phrase_list[i]
-        grammarized_phrases = grammarize_phrase(phrase_list[i])
-        grammarized_phrases.insert(0, kernel_phrase)
-        grammarized_phrase_set.append(grammarized_phrases)
-    return grammarized_phrase_set
+    return reduce(add_to_dict, phrase_list, {})
 
 def grab_phrases_from_list(location):
     workbook_read = xlrd.open_workbook(location)
@@ -156,7 +137,6 @@ def grab_phrases_from_list(location):
 def print_phrases_to_csv(phrase_set, csv_name):
     workbook_write = xlsxwriter.Workbook(csv_name)
     worksheet_write = workbook_write.add_worksheet()
-    col = 0
     cell_format = workbook_write.add_format({'bold': True, 'underline': True, 'center_across': True})
     cell_format.set_bold()
     for j in range(len(phrase_set)):
@@ -174,12 +154,12 @@ def print_phrases_to_csv(phrase_set, csv_name):
 # /Users/thomasmoriarty/PycharmProjects/untitled/mcclubbin_spells.xlsx
 # provide pathname for input list excel file without quotes (example above)
 # excel file saved in repo folder
+if __name__ == '__main__':
+    location = input("give me thyne spells : ")
+    print("choose wisely...")
 
-location = input("give me thyne spells : ")
-print("choose wisely...")
-
-spells = grab_phrases_from_list(location)
-grammarized_spells = grammarize_phrase_set(spells)
-print_phrases_to_csv(grammarized_spells, "grammarian_output.xlsx")
+    spells = grab_phrases_from_list(location)
+    grammarized_spells = grammarize_phrase_set(spells)
+    print_phrases_to_csv(grammarized_spells, "grammarian_output.xlsx")
 
 
