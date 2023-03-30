@@ -2,10 +2,6 @@ import enchant
 import string
 from functools import reduce
 
-import xlrd
-import xlsxwriter
-
-
 d = enchant.Dict("en_US")
 ALPHABET = string.ascii_lowercase
 
@@ -123,43 +119,8 @@ def generate_grammarized_phrase_map(phrase_list):
     def add_to_dict(acc, phrase):
         acc[phrase] = grammarize_phrase(phrase)
         return acc
-
     return reduce(add_to_dict, phrase_list, {})
 
-def grab_phrases_from_list(location):
-    workbook_read = xlrd.open_workbook(location)
-    worksheet_read = workbook_read.sheet_by_index(0)
-    spells = []
-    for i in range(worksheet_read.nrows):
-        spells.append(worksheet_read.cell_value(i, 0))
-    return spells
 
-def print_phrases_to_csv(phrase_set, csv_name):
-    workbook_write = xlsxwriter.Workbook(csv_name)
-    worksheet_write = workbook_write.add_worksheet()
-    cell_format = workbook_write.add_format({'bold': True, 'underline': True, 'center_across': True})
-    cell_format.set_bold()
-    for j in range(len(phrase_set)):
-        row = 0
-        worksheet_write.set_column(j, j, len(phrase_set[j][0]) + 2)
-        for item in (phrase_set[j]):
-            if row is 0:
-                worksheet_write.write(row, j, item, cell_format)
-                row += 1
-            else:
-                worksheet_write.write(row, j, item)
-                row += 1
-    workbook_write.close()
-
-# /Users/thomasmoriarty/PycharmProjects/untitled/mcclubbin_spells.xlsx
-# provide pathname for input list excel file without quotes (example above)
-# excel file saved in repo folder
-if __name__ == '__main__':
-    location = input("give me thyne spells : ")
-    print("choose wisely...")
-
-    spells = grab_phrases_from_list(location)
-    grammarized_spells = grammarize_phrase_set(spells)
-    print_phrases_to_csv(grammarized_spells, "grammarian_output.xlsx")
 
 
