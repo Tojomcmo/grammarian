@@ -113,7 +113,9 @@ def grammarize_phrase_delete(phrase):
     return grammarized_phrases_delete_set
 
 def grammarize_phrase(phrase):
+    # return grammarize_phrase_substitute(phrase)
     return grammarize_phrase_substitute(phrase) + grammarize_phrase_delete(phrase) + grammarize_phrase_shift(phrase)
+
 
 def generate_grammarized_phrase_map(phrase_list):
     def add_to_dict(acc, phrase):

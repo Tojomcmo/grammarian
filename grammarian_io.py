@@ -1,27 +1,17 @@
-import xlrd
-import xlsxwriter
+
+import pandas as pd
+from functools import reduce
 
 def grab_phrases_from_list(location):
-    workbook_read = xlrd.open_workbook(location)
-    worksheet_read = workbook_read.sheet_by_index(0)
-    spells = []
-    for i in range(worksheet_read.nrows):
-        spells.append(worksheet_read.cell_value(i, 0))
-    return spells
-
+    workbook_read  = pd.read_csv(location)
+    spells         = workbook_read.values.tolist()
+    spell_flatlist = reduce(lambda a,b:a+b, spells)
+    return spell_flatlist
+    
 def print_phrases_to_csv(phrase_set, csv_name):
-    workbook_write = xlsxwriter.Workbook(csv_name)
-    worksheet_write = workbook_write.add_worksheet()
-    cell_format = workbook_write.add_format({'bold': True, 'underline': True, 'center_across': True})
-    cell_format.set_bold()
-    for j in range(len(phrase_set)):
-        row = 0
-        worksheet_write.set_column(j, j, len(phrase_set[j][0]) + 2)
-        for item in (phrase_set[j]):
-            if row is 0:
-                worksheet_write.write(row, j, item, cell_format)
-                row += 1
-            else:
-                worksheet_write.write(row, j, item)
-                row += 1
-    workbook_write.close()
+    with open(csv_name, 'w') as f:
+        for key in phrase_set.keys():
+            f.write("%s,%s\n"%(key,phrase_set[key]))
+
+
+
