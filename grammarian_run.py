@@ -6,7 +6,6 @@ import grammarian_io as gm_io
 
 
 if __name__ == '__main__':
-
     location = input("give me thyne spells : ")
     print("choose wisely...")
 
